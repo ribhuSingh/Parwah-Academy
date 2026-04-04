@@ -1,0 +1,26 @@
+{
+  "name": "pern-backend",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build-and-serve": "npm --prefix ../frontend install && npm --prefix ../frontend run build && npm run start",
+    "migrate": "node migrate.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.1.4",
+    "drizzle-orm": "^0.45.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "nodemailer": "^8.0.4",
+    "pg": "^8.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22",
+    "drizzle-kit": "^0.24.2"
+  }
+}
