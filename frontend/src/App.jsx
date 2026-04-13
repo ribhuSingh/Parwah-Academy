@@ -128,6 +128,7 @@ function getCurrentPath() {
 function navigateTo(path) {
   if (window.location.pathname === path) return
   window.history.pushState({}, '', path)
+  window.scrollTo(0, 0)
   window.dispatchEvent(new PopStateEvent('popstate'))
 }
 
@@ -424,6 +425,9 @@ function HomePage() {
                 <p>{item.description}</p>
               </Card>
             ))}
+          </div>
+          <div className="mt-12 text-center">
+            <Button onClick={() => navigateTo('/what-we-do')}>Learn More About Our Initiatives</Button>
           </div>
         </div>
       </section>
