@@ -10,8 +10,13 @@ import contactRouter from './routes/contact.js'
 import partnersRouter from './routes/partners.js'
 import committeeRouter from './routes/committee.js'
 import eventsRouter from './routes/events.js'
+import galleryRouter from './routes/gallery.js'; // New import
+import connectDB from './db.js'
 
 dotenv.config()
+
+// Connect to MongoDB
+connectDB()
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -25,6 +30,7 @@ app.use('/api/contact', contactRouter)
 app.use('/api/partners', partnersRouter)
 app.use('/api/committee', committeeRouter)
 app.use('/api/events', eventsRouter)
+app.use('/api/gallery', galleryRouter); // New route
 
 app.get('/', (req, res) => res.send('PERN backend running'))
 
@@ -42,5 +48,12 @@ if (fs.existsSync(distPath)) {
 		res.sendFile(path.join(distPath, 'index.html'))
 	})
 }
+
+// Global error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack); // Log the error stack for debugging
+  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  res.status(statusCode).json({ message: err.message, stack: process.env.NODE_ENV === 'production' ? null : err.stack });
+});
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));

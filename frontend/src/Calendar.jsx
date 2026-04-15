@@ -34,13 +34,42 @@ const Calendar = () => {
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {events.map(event => (
-            <div key={event.id} className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-semibold mb-2">{event.title}</h2>
-              <p className="text-gray-600 mb-4">{event.description}</p>
-              <div className="text-sm text-gray-500">
-                <p><strong>Date:</strong> {new Date(event.eventDate).toLocaleDateString()}</p>
-                <p><strong>Location:</strong> {event.location}</p>
+            <div key={event.id} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
+              
+              {/* Event Image Added Here */}
+              {event.imageUrl ? (
+                <img 
+                  src={event.imageUrl} 
+                  alt={event.title} 
+                  className="w-full aspect-[16/9] object-cover"
+                />
+              ) : (
+                <div className="w-full aspect-[16/9] bg-gray-100 flex items-center justify-center text-gray-400 text-sm">
+                  No event image
+                </div>
+              )}
+
+              {/* Event Details Content */}
+              <div className="p-6 flex flex-col flex-grow">
+                <h2 className="text-xl font-semibold mb-2 text-slate-900">{event.title}</h2>
+                <p className="text-gray-600 mb-4 flex-grow">{event.description}</p>
+                
+                <div className="text-sm text-gray-500 space-y-1 pt-4 border-t border-gray-100">
+                  <p>
+                    <span className="font-medium text-gray-700">Date:</span>{' '}
+                    {new Date(event.eventDate).toLocaleDateString(undefined, {
+                      weekday: 'short',
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </p>
+                  <p>
+                    <span className="font-medium text-gray-700">Location:</span> {event.location}
+                  </p>
+                </div>
               </div>
+
             </div>
           ))}
         </div>

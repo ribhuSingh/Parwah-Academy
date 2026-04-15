@@ -1,6 +1,6 @@
-# PERN Starter (Postgres, Express, React, Node)
+# MERN Stack Application (MongoDB, Express, React, Node)
 
-This scaffold provides a minimal PERN app split into `backend` and `frontend` folders.
+This project is a MERN stack application with a `backend` (Express, Node.js, MongoDB) and `frontend` (React, Vite) structure.
 
 ## Backend
 
@@ -15,7 +15,7 @@ cd "c:\Users\HP\Desktop\sport academy\pern-app\backend"
 ```powershell
 npm install
 copy .env.example .env
-# edit .env to set DATABASE_URL
+# edit .env to set MONGO_URI
 npm run dev
 ```
 
@@ -38,38 +38,15 @@ npm run dev
 
 The Vite dev server runs on port `3000` and proxies `/api` to `http://localhost:5000`.
 
-## Database
+## Database (MongoDB)
 
-Create a Postgres database and set `DATABASE_URL` in `backend/.env`.
+This project uses MongoDB as its database, managed with Mongoose.
+Ensure you have a MongoDB instance running (local or cloud-based like MongoDB Atlas).
 
-Example connection string:
+Set your MongoDB connection URI in `backend/.env`:
 
 ```
 postgresql://username:password@localhost:5432/mydb
-```
-
-Create a sample `users` table to test the example route:
-
-```sql
-CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL,
-  email TEXT UNIQUE NOT NULL
-);
-INSERT INTO users (name, email) VALUES ('Alice', 'alice@example.com');
-```
-
-Alternatively, run the schema file:
-
-```powershell
-psql <connection_string> -f backend/schema.sql
-```
-
-To support authentication add a `password` column (hashed):
-
-```sql
-ALTER TABLE users ADD COLUMN password TEXT;
--- then insert a user with a hashed password or register via /api/auth/register
 ```
 
 Auth endpoints (backend):
@@ -80,20 +57,6 @@ Auth endpoints (backend):
 Protected example:
 
 Fetch users with Authorization header `Bearer <token>` from login/register.
-
-## Next steps
-
-- Add migrations (e.g. `node-pg-migrate` or `knex`) and connection pooling config.
-- Add auth, CORS fine-tuning, and environment-specific configs.
-
-Drizzle ORM
-
-This project includes a basic Drizzle setup.
-
-- Schema: `backend/schema.js` defines the `users` table using Drizzle's `pg-core` helper.
-- Client: `backend/drizzle.js` creates a `drizzle` client using the project's Postgres pool.
-
-You can use `drizzle-kit` for migrations. To get started, install dependencies and run migrations (or run the SQL in `backend/schema.sql`).
 
 Serve frontend from backend (single port)
 
@@ -120,4 +83,3 @@ npm run build-and-serve
 ```
 
 After this, open http://localhost:5000 to view the frontend (and API remains at `/api/*`).
-

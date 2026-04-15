@@ -3,39 +3,39 @@ import Login from './Login'
 import Button from './components/ui/button'
 import Card from './components/ui/card'
 import Contact from './Contact'
-import Partners from './Partners'
+import Gallery from './Gallery'
 import Footprint from './Footprint'
-import Resources from './Resources'
 import GetInvolved from './GetInvolved'
-import Committee from './Committee'
+import Committee from './Partners'
 import Organization from './Organization'
 import WhatWeDo from './WhatWeDo'
 import Calendar from './Calendar'
+import AdminGalleryManager from './AdminGalleryManager'
 import Register from './Register'
 
 const navigationLinks = [
-  { href: '/what-we-do', label: 'What We Do' },
-  { href: '/organization', label: 'Organization' },
-  { href: '/footprint', label: 'Footprint' },
-  { href: '/partners', label: 'Partners' },
+  { href: '/about', label: 'About Us' },
+  { href: '/programs', label: 'Our Programs' },
+  { href: '/calendar', label: 'Upcoming Events' }, // Added this line
+  { href: '/impact', label: 'Our Impact' },
+  { href: '/gallery', label: 'Gallery' },
+  { href: '/team', label: 'Our Team' },
   { href: '/get-involved', label: 'Get Involved' },
-  { href: '/resources', label: 'Resources' },
-  { href: '/committee', label: 'Committee' },
   { href: '/contact', label: 'Contact' },
 ]
 
 const heroSlides = [
   {
     src: '/assets/C1.jpeg',
-    alt: 'Athletes competing in a tournament',
-    title: 'Building Champions',
-    description: 'Supporting athletes at every level of competition',
+    alt: 'Young athletes training together',
+    title: 'Nurturing Talent',
+    description: 'Empowering young athletes to achieve their full potential',
   },
   {
     src: '/assets/C2.jpg',
     alt: 'Community sports event',
-    title: 'Community Impact',
-    description: 'Creating positive change through sports',
+    title: 'Community Engagement',
+    description: 'Building a strong sports culture from the grassroots up',
   },
   {
     src: '/assets/P5.jpeg',
@@ -45,21 +45,21 @@ const heroSlides = [
   },
 ]
 
-const whatWeDo = [
+const homePagePrograms = [
   {
-    title: 'Athlete Development',
+    title: 'School & Grassroots Programs',
     description:
-      'Comprehensive training programs, scholarships, and support systems for athletes at all levels.',
+      'Identifying and nurturing young talent at the school level through structured training programs.',
   },
   {
-    title: 'Event Organization',
+    title: 'Science-Based Training',
     description:
-      'Hosting national and international competitions, tournaments, and exhibition matches.',
+      'Promoting modern training methods, strength & conditioning, and nutrition awareness for peak performance.',
   },
   {
-    title: 'Community Programs',
+    title: 'Rural Talent Identification',
     description:
-      'Grassroots initiatives, youth engagement, and sports for development projects.',
+      'Discovering and supporting talented athletes from rural and underprivileged communities.',
   },
 ]
 
@@ -91,34 +91,34 @@ const trustPoints = [
   },
 ]
 
-const resources = [
+const homePageResources = [
   {
-    title: 'Training Materials',
+    title: 'Our Gallery',
     description:
-      'Coaching guides, training plans, and technical resources for athletes and coaches.',
-    cta: 'Access Library',
-    href: '#',
+      'See our athletes in action, from training sessions to competitive events.',
+    cta: 'View Gallery',
+    href: '/gallery',
   },
   {
     title: 'Event Calendar',
     description:
       'Upcoming competitions, training camps, workshops, and community events.',
     cta: 'View Calendar',
-    href: '/calendar',
+    href: '/calendar', // This remains the same
   },
   {
-    title: 'Publications',
+    title: 'Get Involved',
     description:
-      'Inter-School Taekwondo Championship by Parwah Sports Charitable Trust',
-    cta: 'Browse Publications',
-    href: '/assets/sample.pdf',
+      'Partner with us, volunteer, or support our mission to empower young athletes.',
+    cta: 'Join Our Mission',
+    href: '/get-involved',
   },
 ]
 
-const committeeMembers = [
-  { id: 2, image: '/assets/M2.jpeg', name: 'Haider choudhary' },
-  { id: 1, image: '/assets/M1.jpeg', name: 'Mustkin ansari ' },
-  { id: 4, image: '/assets/M4.jpeg', name: 'Ritik Singh' },
+const homePageCommitteeMembers = [
+  { id: 1, image: '/assets/M2.jpeg', name: 'Haider Ali Choudhary', role: 'Founder / President' },
+  { id: 2, image: '/assets/M4.jpeg', name: 'Digvijay Singh', role: 'Head Coach' },
+  { id: 3, image: '/assets/M1.jpeg', name: 'M. Mustkeem Ansari', role: 'National Coach' },
 ]
 
 function getCurrentPath() {
@@ -200,13 +200,13 @@ function Header({ token, path }) {
   }, [adminDropdownOpen]);
 
   return (
-    <header className="site-header">
+    <header className="site-header sticky top-0 z-50 bg-white shadow-sm">
       <div className="shell flex items-center justify-between gap-8 py-3">
         
         {/* Brand Section - Leftmost */}
         <button
           type="button"
-          className="brand-mark flex-shrink-0"
+          className="brand-mark flex-shrink-0 flex items-center gap-3"
           onClick={() => {
             setMenuOpen(false)
             navigateTo('/')
@@ -214,23 +214,30 @@ function Header({ token, path }) {
           }}
         >
           <img src="/assets/logo.png" alt="Parwah Sports logo" className="h-12 w-12 rounded-full object-cover shadow-sm" />
-          <div className="text-left">
-            <p className="brand-kicker">Parwah Sports</p>
-            <p className="brand-title">Charitable Trust</p>
+          <div className="text-left hidden sm:block">
+            <p className="brand-kicker text-xs font-bold text-blue-600 uppercase tracking-wider">Parwah Sports</p>
+            <p className="brand-title text-sm font-semibold text-slate-900">Charitable Trust</p>
           </div>
         </button>
 
         {/* Navigation - Hidden on mobile, shown on lg screens */}
-        <nav className="hidden items-center gap-8 lg:flex flex-1">
-          {navigationLinks.map((link) => (
-            <ScrollLink 
-              key={link.href} 
-              href={link.href} 
-              className={`nav-link ${isActivePath(link.href) ? 'nav-link-active' : ''}`}
-            >
-              {link.label}
-            </ScrollLink>
-          ))}
+        <nav className="hidden items-center gap-6 lg:flex flex-1 justify-center">
+          {navigationLinks.map((link) => {
+            const active = isActivePath(link.href);
+            return (
+              <ScrollLink 
+                key={link.href} 
+                href={link.href} 
+                className={`nav-link text-sm font-medium transition-colors duration-200 py-2 border-b-2 ${
+                  active 
+                    ? 'text-blue-600 border-blue-600' 
+                    : 'text-gray-600 border-transparent hover:text-blue-600'
+                }`}
+              >
+                {link.label}
+              </ScrollLink>
+            )
+          })}
         </nav>
 
         {/* Admin Dropdown - Extreme Right */}
@@ -243,18 +250,29 @@ function Header({ token, path }) {
               Admin
             </button>
             {adminDropdownOpen && (
-              <div className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-40">
-                {token ? (
-                  <button
-                    onClick={() => {
-                      setAdminDropdownOpen(false);
-                      navigateTo('/admin')
-                    }}
-                    className="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                  >
-                    Admin Panel
-                  </button>
-                ) : (
+              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-40">
+                {token ? ( // If token exists, show admin options
+                  <>
+                    <button
+                      onClick={() => {
+                        setAdminDropdownOpen(false);
+                        navigateTo('/admin/gallery');
+                      }}
+                      className="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-200"
+                    >
+                      Manage Gallery
+                    </button>
+                    <button
+                      onClick={() => {
+                        setAdminDropdownOpen(false);
+                        navigateTo('/admin');
+                      }}
+                      className="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      Admin Panel
+                    </button>
+                  </>
+                ) : ( // If no token, show login/register
                   <>
                     <button
                       onClick={() => {
@@ -284,46 +302,61 @@ function Header({ token, path }) {
         {/* Mobile Menu Toggle - shown on mobile, hidden on lg screens */}
         <button
           type="button"
-          className="menu-toggle lg:hidden"
+          className="menu-toggle lg:hidden flex flex-col gap-1 p-2"
           aria-label="Toggle navigation"
           onClick={() => setMenuOpen((current) => !current)}
         >
-          <span />
-          <span />
-          <span />
+          <span className={`block w-6 h-0.5 bg-slate-900 transition-transform ${menuOpen ? 'rotate-45 translate-y-1.5' : ''}`} />
+          <span className={`block w-6 h-0.5 bg-slate-900 transition-opacity ${menuOpen ? 'opacity-0' : ''}`} />
+          <span className={`block w-6 h-0.5 bg-slate-900 transition-transform ${menuOpen ? '-rotate-45 -translate-y-1.5' : ''}`} />
         </button>
       </div>
 
       {/* Mobile Menu - shown only on mobile when open */}
       {menuOpen ? (
-        <div className="shell pb-4 lg:hidden border-t border-gray-200">
-          <div className="mobile-panel">
-            {navigationLinks.map((link) => (
-              <ScrollLink
-                key={link.href}
-                href={link.href}
-                className={`mobile-link ${isActivePath(link.href) ? 'mobile-link-active' : ''}`}
-                onClick={() => setMenuOpen(false)}
-              >
-                {link.label}
-              </ScrollLink>
-            ))}
+        <div className="shell pb-4 lg:hidden border-t border-gray-200 bg-white">
+          <div className="mobile-panel flex flex-col pt-2">
+            {navigationLinks.map((link) => {
+              const active = isActivePath(link.href);
+              return (
+                <ScrollLink
+                  key={link.href}
+                  href={link.href}
+                  className={`mobile-link block w-full px-4 py-3 text-sm font-medium transition-colors ${
+                    active 
+                      ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600' 
+                      : 'text-gray-700 border-l-4 border-transparent hover:bg-gray-50'
+                  }`}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {link.label}
+                </ScrollLink>
+              )
+            })}
             
             {/* Mobile Admin Buttons */}
-            <div className="pt-2 border-t border-gray-200 mt-2 flex flex-col gap-2">
+            <div className="pt-4 border-t border-gray-200 mt-2 flex flex-col gap-3 px-4">
               {token ? (
-                <Button 
-                  onClick={() => { setMenuOpen(false); navigateTo('/admin'); }}
-                  className="w-full text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  Admin Panel
-                </Button>
+                <> 
+                  <Button 
+                    onClick={() => { setMenuOpen(false); navigateTo('/admin/gallery'); }}
+                    className="w-full text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    Manage Gallery
+                  </Button>
+                  <Button 
+                    onClick={() => { setMenuOpen(false); navigateTo('/admin'); }}
+                    className="w-full text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    Admin Panel
+                  </Button>
+                </>
               ) : (
                 <>
                   <Button 
                     variant="ghost" 
                     onClick={() => { setMenuOpen(false); navigateTo('/admin/login'); }}
-                    className="w-full text-sm font-semibold"
+                    className="w-full text-sm font-semibold border border-gray-300"
                   >
                     Login
                   </Button>
@@ -418,7 +451,7 @@ function HomePage() {
             </p>
           </div>
           <div className="feature-grid">
-            {whatWeDo.map((item, index) => (
+            {homePagePrograms.map((item, index) => (
               <Card key={item.title} className={`feature-card feature-card-${index + 1}`}>
                 <div className="feature-badge">{`0${index + 1}`}</div>
                 <h3>{item.title}</h3>
@@ -427,7 +460,7 @@ function HomePage() {
             ))}
           </div>
           <div className="mt-12 text-center">
-            <Button onClick={() => navigateTo('/what-we-do')}>Learn More About Our Initiatives</Button>
+            <Button onClick={() => navigateTo('/programs')}>Learn More About Our Initiatives</Button>
           </div>
         </div>
       </section>
@@ -477,7 +510,7 @@ function HomePage() {
             </p>
           </div>
           <div className="resource-grid">
-            {resources.map((resource) => (
+            {homePageResources.map((resource) => (
               <Card key={resource.title} className="resource-card">
                 <h3>{resource.title}</h3>
                 <p>{resource.description}</p>
@@ -506,12 +539,13 @@ function HomePage() {
             </p>
           </div>
           <div className="committee-grid">
-            {committeeMembers.map((member) => (
+            {homePageCommitteeMembers.map((member) => (
               <Card key={member.id} className="committee-card">
                 <div className="committee-photo-wrap">
                   <img src={member.image} alt={member.name} className="committee-photo" />
                 </div>
                 <h3>{member.name}</h3>
+                <p className="text-sm text-slate-500">{member.role}</p>
               </Card>
             ))}
           </div>
@@ -564,37 +598,37 @@ function Footer() {
           <div className="animate-on-scroll">
             <h3 className="font-medium text-lg mb-4 text-slate-900">Quick Links</h3>
             <ul className="space-y-2">
-              <li>
-                <ScrollLink href="/organization" className="text-sm text-muted-foreground hover:text-primary transition-colors">The Organization</ScrollLink>
+              <li> {/* New: About Us */}
+                <ScrollLink href="/about" className="text-sm text-muted-foreground hover:text-primary transition-colors">About Us</ScrollLink>
               </li>
-              <li>
-                <ScrollLink href="/what-we-do" className="text-sm text-muted-foreground hover:text-primary transition-colors">What We Do</ScrollLink>
+              <li> {/* New: Our Programs */}
+                <ScrollLink href="/programs" className="text-sm text-muted-foreground hover:text-primary transition-colors">Our Programs</ScrollLink>
               </li>
-              <li>
-                <ScrollLink href="/footprint" className="text-sm text-muted-foreground hover:text-primary transition-colors">Our Footprint</ScrollLink>
+              <li> {/* New: Our Impact */}
+                <ScrollLink href="/impact" className="text-sm text-muted-foreground hover:text-primary transition-colors">Our Impact</ScrollLink>
               </li>
-              <li>
-                <ScrollLink href="/committee" className="text-sm text-muted-foreground hover:text-primary transition-colors">Committee</ScrollLink>
+              <li> {/* New: Our Team */}
+                <ScrollLink href="/team" className="text-sm text-muted-foreground hover:text-primary transition-colors">Our Team</ScrollLink>
               </li>
-              <li>
-                <ScrollLink href="/partners" className="text-sm text-muted-foreground hover:text-primary transition-colors">Partners</ScrollLink>
+              <li> {/* New: Gallery */}
+                <ScrollLink href="/gallery" className="text-sm text-muted-foreground hover:text-primary transition-colors">Gallery</ScrollLink>
               </li>
             </ul>
           </div>
           <div className="animate-on-scroll">
             <h3 className="font-medium text-lg mb-4 text-slate-900">Resources</h3>
             <ul className="space-y-2">
-              <li>
-                <ScrollLink href="/resources" className="text-sm text-muted-foreground hover:text-primary transition-colors">Training Materials</ScrollLink>
+              <li> {/* New: Get Involved */}
+                <ScrollLink href="/get-involved" className="text-sm text-muted-foreground hover:text-primary transition-colors">Get Involved</ScrollLink>
               </li>
               <li>
                 <ScrollLink href="/calendar" className="text-sm text-muted-foreground hover:text-primary transition-colors">Event Calendar</ScrollLink>
-              </li>
+              </li> {/* New: Contact Us */}
               <li>
-                <ScrollLink href="/resources" className="text-sm text-muted-foreground hover:text-primary transition-colors">Publications</ScrollLink>
-              </li>
+                <ScrollLink href="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact Us</ScrollLink>
+              </li> {/* New: Media Gallery (links to Gallery) */}
               <li>
-                <ScrollLink href="/resources" className="text-sm text-muted-foreground hover:text-primary transition-colors">Media Gallery</ScrollLink>
+                <ScrollLink href="/gallery" className="text-sm text-muted-foreground hover:text-primary transition-colors">Media Gallery</ScrollLink>
               </li>
             </ul>
           </div>
@@ -752,65 +786,7 @@ function AdminDashboard({ user, users, onLogout, isLoading, error }) {
         </Card>
       </div>
 
-      <Card className="dashboard-table-card">
-        <div className="mb-4 flex items-center justify-between gap-4">
-          <div>
-            <p className="stat-label">Create Event</p>
-            <h2 className="text-2xl font-semibold text-slate-950">Add new calendar event</h2>
-          </div>
-        </div>
 
-        <form onSubmit={handleEventSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Title</label>
-            <input
-              type="text"
-              name="title"
-              value={eventForm.title}
-              onChange={handleEventChange}
-              required
-              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
-            <textarea
-              name="description"
-              value={eventForm.description}
-              onChange={handleEventChange}
-              required
-              rows={3}
-              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Date & Time</label>
-            <input
-              type="datetime-local"
-              name="eventDate"
-              value={eventForm.eventDate}
-              onChange={handleEventChange}
-              required
-              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Location</label>
-            <input
-              type="text"
-              name="location"
-              value={eventForm.location}
-              onChange={handleEventChange}
-              required
-              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-500"
-            />
-          </div>
-          <Button type="submit" disabled={creatingEvent}>
-            {creatingEvent ? 'Creating...' : 'Create Event'}
-          </Button>
-        </form>
-        {eventError ? <p className="text-sm text-rose-700 mt-4">{eventError}</p> : null}
-      </Card>
 
       <Card className="dashboard-table-card">
         <div className="mb-4 flex items-center justify-between gap-4">
@@ -931,24 +907,30 @@ export default function App() {
       )
     }
 
+    if (path === '/admin/gallery') {
+      if (!token) return null
+      return <AdminGalleryManager token={token} /> // Ensure token is passed
+    }
     if (path === '/contact') return <Contact />
-    if (path === '/partners') return <Partners />
-    if (path === '/footprint') return <Footprint />
-    if (path === '/resources') return <Resources />
+    if (path === '/gallery') return <Gallery />
+    if (path === '/impact') return <Footprint />
+    // if (path === '/resources') return <Resources /> // Removed
     if (path === '/get-involved') return <GetInvolved />
-    if (path === '/committee') return <Committee />
-    if (path === '/organization') return <Organization />
-    if (path === '/what-we-do') return <WhatWeDo />
+    if (path === '/team') return <Committee />
+    if (path === '/about') return <Organization />
+    if (path === '/programs') return <WhatWeDo />
     if (path === '/calendar') return <Calendar />
 
     return <HomePage />
   }, [loadingUsers, path, token, user, users, usersError])
 
-  const isPublicPage = !path.startsWith('/admin')
+const isPublicPage = !path.startsWith('/admin')
+  const isAuthPage = path === '/admin/login' || path === '/admin/register'
 
   return (
     <div className="app-shell">
-      {isPublicPage ? <Header token={token} path={path} /> : null}
+      {/* Shows on public pages AND admin dashboard, but hides on login/register */}
+      {!isAuthPage ? <Header token={token} path={path} /> : null}
       {page}
       {isPublicPage ? <Footer /> : null}
     </div>

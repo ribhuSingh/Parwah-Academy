@@ -1,13 +1,13 @@
-import { db } from '../drizzle.js'
-import { users } from '../schema.js'
+import User from '../models/User.js' // Updated path
 
 export async function getUsers(req, res) {
   try {
-    const result = await db.select({ id: users.id, name: users.name, email: users.email }).from(users).limit(100)
+    const users = await User.find().select('_id name email').limit(100).lean()
+    // Map _id to id for frontend compatibility
+    const result = users.map(u => ({ id: u._id, name: u.name, email: u.email }))
     res.json(result)
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Database error' })
   }
 }
-

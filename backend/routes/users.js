@@ -1,10 +1,10 @@
 import express from 'express'
-import auth from '../middleware/auth.js'
+import { protect, admin } from '../middleware/auth.js';
 import { getUsers } from '../controllers/userController.js'
 
 const router = express.Router()
 
 // GET /api/users - list users (protected)
-router.get('/', auth, getUsers)
+router.get('/', protect, admin, getUsers)
 
 export default router

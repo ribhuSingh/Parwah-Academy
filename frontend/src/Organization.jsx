@@ -1,6 +1,5 @@
 import React from "react"
 import Card from "./components/ui/card"
-import Button from "./components/ui/button"
 
 const sports = [
   "Taekwondo",
@@ -16,24 +15,24 @@ const focusAreas = [
   {
     title: "Grassroots Sports Development",
     description:
-      "Identifying and nurturing young talent at the school level through structured training programs. We focus on early skill development, discipline, and building a strong athletic foundation from a young age.",
+      "Identifying and nurturing young talent at the school level through structured training programs.",
   },
   {
     title: "School Sports Programs",
     description:
-      "Collaborating with schools to introduce professional coaching and regular sports activities. Our programs integrate seamlessly into academic environments, ensuring balanced growth in both education and sports.",
+      "Collaborating with schools to introduce professional coaching and regular sports activities.",
   },
   {
     title: "Athlete Performance Training",
     description:
-      "Providing systematic training, fitness development, and competitive exposure for athletes. We emphasize endurance, strength, and mental resilience to prepare athletes for higher-level competitions.",
+      "Providing systematic training, fitness development, and competitive exposure for athletes.",
   },
 ]
 
 const missionPoints = [
-  "Promote sports participation among students and encourage active lifestyles",
-  "Provide professional coaching and structured athlete development programs",
-  "Support talented athletes with training, mentorship, and long-term guidance",
+  "Promote sports participation among students",
+  "Provide professional coaching and athlete development programs",
+  "Support talented athletes with training, mentorship, and guidance",
 ]
 
 const partnershipPoints = [
@@ -61,13 +60,13 @@ export default function Organization() {
       <section className="section-block">
         <div className="shell text-center max-w-3xl mx-auto">
           <p className="eyebrow">About the Organization</p>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-950">
-            Building a Strong Foundation for Future Athletes
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-950 tracking-tight">
+            Nurturing Talent, Building Futures
           </h1>
           <p className="mt-4 text-muted-foreground">
-            Parwah Sports Charitable Trust (PSCT) is dedicated to nurturing
-            young athletes and promoting a culture of discipline, fitness, and
-            excellence through structured sports programs.
+            PSCT is a sports development organization dedicated to nurturing
+            young athletes and promoting a culture of discipline, health, and
+            excellence through structured sports training and athlete development programs.
           </p>
         </div>
       </section>
@@ -77,20 +76,21 @@ export default function Organization() {
         <div className="shell grid gap-10 lg:grid-cols-2 items-start">
           <div className="section-heading text-left">
             <p className="eyebrow">Who We Are</p>
-            <h2>Empowering athletes through structured development</h2>
+            <h2>Empowering Athletes Through Structured Development</h2>
             <p>
-              PSCT works closely with schools, communities, and sports
-              professionals to create opportunities for students to participate
-              in Olympic and professional sports.
+              PSCT – Parwah Sports Charitable Trust is a sports development organization committed to nurturing young athletes and promoting a culture of discipline, health, and excellence through structured sports training and athlete development programs.
             </p>
             <p className="mt-4">
-              Our programs focus on building physical fitness, confidence, and
-              leadership qualities while instilling discipline and a strong
-              competitive mindset in young athletes.
+              The organization works closely with schools, communities, and sports professionals to provide students with opportunities to participate in Olympic and professional sports while developing physical fitness, confidence, and leadership qualities.
             </p>
             <p className="mt-4">
-              We also emphasize athlete health and safety by promoting basic
-              medical support, injury awareness, and proper recovery practices.
+              Understanding that athlete health and safety are essential for performance, the organization also promotes basic medical support and injury awareness for athletes, helping them train safely and recover properly when needed.
+            </p>
+            <p className="mt-4">
+              Our mission is to identify talented athletes from the grassroots level and provide them with the guidance, training, and exposure needed to reach district, state, national, and international competitions.
+            </p>
+            <p className="mt-4">
+              Through partnerships with schools, coaches, and sports organizations, PSCT aims to build a strong sporting ecosystem that supports athletes not only in sports performance but also in their personal growth and education.
             </p>
           </div>
 
@@ -121,7 +121,7 @@ export default function Organization() {
         <div className="shell">
           <div className="section-heading">
             <p className="eyebrow">Key Focus Areas</p>
-            <h2>Where we create impact</h2>
+            <h2>Where We Create Impact</h2>
             <p>
               Our initiatives are designed to support athletes at every stage —
               from early discovery to competitive excellence.
@@ -149,7 +149,7 @@ export default function Organization() {
           <Card className="p-6 space-y-3">
             <p className="eyebrow">Vision</p>
             <h2 className="text-2xl font-semibold">
-              Building a strong sporting culture
+              Building a Strong Sporting Culture
             </h2>
             <p className="text-muted-foreground">
               To build a strong sporting culture in India by developing talented
@@ -165,7 +165,7 @@ export default function Organization() {
           <Card className="p-6 space-y-3">
             <p className="eyebrow">Mission</p>
             <h2 className="text-2xl font-semibold">
-              Supporting athletes at every step
+              Supporting Athletes at Every Step
             </h2>
             <ul className="space-y-2 text-muted-foreground text-sm">
               {missionPoints.map((point, index) => (
@@ -201,13 +201,6 @@ export default function Organization() {
             ))}
           </div>
 
-          <div className="text-center mt-10">
-            <a href="/">
-              <button className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-navy-700 text-white hover:bg-navy-800 h-10 px-6 py-2 transition-colors">
-                Return to Home
-              </button>
-            </a>
-          </div>
         </div>
       </section>
     </main>

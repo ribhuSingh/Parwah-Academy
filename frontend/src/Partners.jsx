@@ -1,228 +1,126 @@
-import React from 'react'
+import React, { useState, useMemo, useEffect } from 'react';
 
-const Partners = () => {
-  const [partners, setPartners] = React.useState([])
-  const [loading, setLoading] = React.useState(true)
-  const [error, setError] = React.useState('')
+const Committee = () => {
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [activeCategory, setActiveCategory] = useState("All");
 
-  React.useEffect(() => {
-    async function loadPartners() {
+  useEffect(() => {
+    const fetchCommittee = async () => {
+      setLoading(true);
+      setError('');
       try {
-        const response = await fetch('/api/partners')
-        if (!response.ok) throw new Error('Could not load partners')
-        const data = await response.json()
-        setPartners(data)
+        const res = await fetch('/api/committee');
+        if (!res.ok) throw new Error('Failed to fetch committee members');
+        const data = await res.json();
+        setMembers(data);
       } catch (err) {
-        console.error(err)
-        setError('Unable to load partners right now.')
+        console.error(err);
+        setError('Failed to load committee members. Please try again later.');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
+    };
+
+    fetchCommittee();
+  }, []);
+
+  const categories = useMemo(() => {
+    const uniqueCategories = new Set(members.map(member => member.category));
+    return ["All", ...Array.from(uniqueCategories)];
+  }, [members]);
+
+  const filteredMembers = useMemo(() => {
+    if (activeCategory === "All") {
+      return members;
     }
+    return members.filter(member => member.category === activeCategory);
+  }, [activeCategory, members]);
 
-    loadPartners()
-  }, [])
+  if (loading) {
+    return <div className="text-center py-12 text-lg text-gray-600">Loading committee...</div>;
+  }
 
-  const fallbackPartners = [
-    {
-      id: 1,
-      name: "Global Sports Equipment",
-      category: "Equipment Supplier",
-      description: "Leading provider of high-quality sports equipment for professional athletes and teams worldwide.",
-      logo: "/assets/E1.jpeg",
-      website: "#",
-      featured: true,
-    },
-    {
-      id: 2,
-      name: "Health First Medical",
-      category: "Healthcare Partner",
-      description:
-        "Specialized medical services for athletes, focusing on sports medicine, injury prevention, and rehabilitation.",
-      logo: "/assets/E2.jpeg",
-      website: "#",
-      featured: true,
-    },    {
-      id: 3,
-      name: "City Marathon Organizers",
-      category: "Event Organizer",
-      description:
-        "Organizers of the annual city marathon, hosting thousands of runners from around the world.",
-      logo: "/assets/E3.jpeg",
-      website: "#",
-      featured: false,
-    },
-    {
-      id: 4,
-      name: "National Basketball League",
-      category: "Sports League",
-      description:
-        "Official governing body for professional basketball leagues, promoting national tournaments and youth development.",
-      logo: "/assets/E4.jpeg",
-      website: "#",
-      featured: false,
-    },
-    {
-      id: 5,
-      name: "International Swimming Association",
-      category: "Event Sponsor",
-      description:
-        "Supports swimming competitions worldwide and provides training camps for elite swimmers.",
-      logo: "/assets/E5.jpeg",
-      website: "#",
-      featured: false,
-    },
-    {
-      id: 6,
-      name: "Pro Cycling Tours",
-      category: "Event Management",
-      description:
-        "Management and promotion of professional cycling tours across multiple countries, focusing on competitive racing.",
-      logo: "/assets/E6.jpeg",
-      website: "#",
-      featured: false,
-    },
-    {
-      id: 7,
-      name: "Taekwondo Championship 2025",
-      category: "Sports League",
-      description:
-        "The Taekwondo Championship 2025 is organized by Parwah Sports Trust, bringing together athletes to showcase skill, discipline, and sportsmanship in one of the most dynamic martial arts competitions.",
-      logo: "/assets/P1.jpeg",
-      website: "#",
-      featured: false,
-    },
-    {
-      id: 8,
-      name: "Taekwondo Championship 2025",
-      category: "Sports League",
-      description:
-        "The Taekwondo Championship 2025 is organized by Parwah Sports Trust, bringing together athletes to showcase skill, discipline, and sportsmanship in one of the most dynamic martial arts competitions.",
-      logo: "/assets/P2.jpeg",
-      website: "#",
-      featured: false,
-    },
-    {
-      id: 9,
-      name: "Taekwondo Championship 2025",
-      category: "Sports League",
-      description:
-        "The Taekwondo Championship 2025 is organized by Parwah Sports Trust, bringing together athletes to showcase skill, discipline, and sportsmanship in one of the most dynamic martial arts competitions.",
-      logo: "/assets/P3.jpeg",
-      website: "#",
-      featured: false,
-    },
-    {
-      id: 10,
-      name: "Taekwondo Championship 2025",
-      category: "Sports League",
-      description:
-        "The Taekwondo Championship 2025 is organized by Parwah Sports Trust, bringing together athletes to showcase skill, discipline, and sportsmanship in one of the most dynamic martial arts competitions.",
-      logo: "/assets/P4.jpeg",
-      website: "#",
-      featured: false,
-    },
-    {
-      id: 11,
-      name: "Taekwondo Championship 2025",
-      category: "Sports League",
-      description:
-        "The Taekwondo Championship 2025 is organized by Parwah Sports Trust, bringing together athletes to showcase skill, discipline, and sportsmanship in one of the most dynamic martial arts competitions.",
-      logo: "/assets/P5.jpeg",
-      website: "#",
-      featured: false,
-    },
-    {
-      id: 12,
-      name: "Taekwondo Championship 2025",
-      category: "Sports League",
-      description:
-        "The Taekwondo Championship 2025 is organized by Parwah Sports Trust, bringing together athletes to showcase skill, discipline, and sportsmanship in one of the most dynamic martial arts competitions.",
-      logo: "/assets/P6.jpeg",
-      website: "#",
-      featured: false,
-    },
-    {
-      id: 13,
-      name: "Taekwondo Championship 2025",
-      category: "Sports League",
-      description:
-        "The Taekwondo Championship 2025 is organized by Parwah Sports Trust, bringing together athletes to showcase skill, discipline, and sportsmanship in one of the most dynamic martial arts competitions.",
-      logo: "/assets/P7.jpeg",
-      website: "#",
-      featured: false,
-    },
-    {
-      id: 14,
-      name: "Taekwondo Championship 2025",
-      category: "Sports League",
-      description:
-        "The Taekwondo Championship 2025 is organized by Parwah Sports Trust, bringing together athletes to showcase skill, discipline, and sportsmanship in one of the most dynamic martial arts competitions.",
-      logo: "/assets/P8.jpeg",
-      website: "#",
-      featured: false,
-    },
-    {
-      id: 15,
-      name: "Taekwondo Championship 2025",
-      category: "Sports League",
-      description:
-        "The Taekwondo Championship 2025 is organized by Parwah Sports Trust, bringing together athletes to showcase skill, discipline, and sportsmanship in one of the most dynamic martial arts competitions.",
-      logo: "/assets/P9.jpeg",
-      website: "#",
-      featured: false,
-    },
-  ]
+  if (error) {
+    return <div className="text-center py-12 text-lg text-red-600">{error}</div>;
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">
         <section className="bg-gradient-to-b from-navy-700 to-blue-800 text-white py-16 md:py-20 text-center">
           <div className="container mx-auto px-4">
-            <h1 className="text-5xl font-extrabold tracking-tight mb-6">Image Gallery</h1>
+            <h1 className="text-5xl font-extrabold tracking-tight mb-6">Our Committee</h1>
             <p className="text-white/80 text-lg max-w-2xl mx-auto">
-              A showcase of our partners and contributors who help us achieve greatness in the world of sports.
+              Meet the dedicated leaders, coaches, and advisors who guide our mission and support our athletes.
             </p>
           </div>
         </section>
 
         <section className="py-12 md:py-16">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-10 relative inline-block">
-              Unleashing Passion, Showcasing Glory! 🏆📸
-              <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gold-400"></span>
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {loading && <p className="text-center text-slate-500">Loading partners...</p>}
-              {error && <p className="text-center text-red-500">{error}</p>}
-              {(partners.length ? partners : fallbackPartners).map((partner, index) => (
-                <div
-                  key={partner.id}
-                  className="bg-white border rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 flex flex-col items-center text-center"
+            {/* Category Filters */}
+            <div className="flex justify-center flex-wrap gap-2 mb-10">
+              {categories.map(category => (
+                <button
+                  key={category}
+                  onClick={() => setActiveCategory(category)}
+                  className={`px-4 py-2 text-sm font-semibold rounded-full transition-colors ${
+                    activeCategory === category
+                      ? 'bg-navy-700 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
                 >
-                  <div className="h-48 w-full relative">
-                    <img
-                      src={partner.logoUrl}
-                      alt={`${partner.name} logo`}
-                      className="w-full h-full object-cover rounded-t-lg"
-                    />
-                  </div>
-
-                  <div className="p-6 flex-1 flex flex-col items-center">
-                    <span className="bg-navy-700/10 text-navy-700 text-xs font-semibold px-3 py-1 rounded-full mb-2">
-                      {partner.category}
-                    </span>
-                    <h2 className="text-xl font-bold mb-2">{partner.name}</h2>
-                    <p className="text-gray-600 text-sm mb-4">{partner.description}</p>
-                  </div>
-                </div>
+                  {category}
+                </button>
               ))}
+            </div>
+
+            {/* Committee Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {filteredMembers.length === 0 ? (
+                <p className="col-span-full text-center text-gray-500">No members found for this category.</p>
+              ) : (
+                filteredMembers.map((member) => (
+                  <div
+                    key={member._id} 
+                    className="bg-white border rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 flex flex-col items-center text-center"
+                  >
+                    {/* 🔥 CHANGED: Replaced h-56 with aspect-square */}
+                    <div className="aspect-square w-full relative bg-gray-100 flex items-center justify-center">
+                      {member.imageUrl ? (
+                        <img
+                          src={member.imageUrl}
+                          alt={member.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        /* SVG Fallback for missing images */
+                        <svg className="w-24 h-24 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                      )}
+                    </div>
+
+                    {/* Card Content */}
+                    <div className="p-6 flex-1 flex flex-col items-center">
+                      <span className="bg-navy-700/10 text-navy-700 text-xs font-semibold px-3 py-1 rounded-full mb-3">
+                        {member.category || 'Uncategorized'}
+                      </span>
+                      <h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
+                      <p className="text-blue-600 font-medium text-sm mb-4">{member.role}</p>
+                      <p className="text-gray-600 text-sm leading-relaxed">{member.bio}</p>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </section>
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default Partners
+export default Committee;
