@@ -21,7 +21,35 @@ connectDB()
 const app = express()
 const PORT = process.env.PORT || 5000
 
-app.use(cors())
+const defaultAllowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:3001',
+]
+
+const configuredOrigins = (process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean)
+
+const allowedOrigins = [...new Set([...defaultAllowedOrigins, ...configuredOrigins])]
+
+const corsOptions = {
+  origin(origin, callback) {
+    // Allow same-origin, proxy, and server-to-server requests that omit Origin.
+    if (!origin) return callback(null, true)
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true)
+    }
+
+    return callback(new Error(`CORS blocked for origin: ${origin}`))
+  },
+  credentials: true,
+}
+
+app.use(cors(corsOptions))
 app.use(express.json())
 
 app.use('/api/users', usersRouter)

@@ -2,6 +2,67 @@
 
 This project is a MERN stack application with a `backend` (Express, Node.js, MongoDB) and `frontend` (React, Vite) structure.
 
+## Production Hosting
+
+This repo is configured for:
+
+- `parwahsports.com` on Vercel for the frontend
+- Render for the Express API
+- MongoDB Atlas for the database
+
+### Architecture
+
+`parwahsports.com`
+-> Vercel frontend
+-> Vercel rewrite from `/api/*` to Render
+-> Render Express API
+-> MongoDB Atlas
+
+### Vercel setup
+
+Create the Vercel project with `frontend` as the project root.
+
+- Framework preset: `Vite`
+- Build command: `npm run build`
+- Output directory: `dist`
+- Production domain: `parwahsports.com`
+
+The repo includes [frontend/vercel.js](frontend/vercel.js), which:
+
+- rewrites `/api/*` to your Render backend
+- rewrites SPA routes like `/about` and `/admin/login` to `index.html`
+
+Set this Vercel environment variable:
+
+- `RENDER_BACKEND_URL=https://your-render-service.onrender.com`
+
+### Render setup
+
+Create the Render web service with `backend` as the root directory, or use the root-level [render.yaml](render.yaml) blueprint.
+
+- Build command: `npm install`
+- Start command: `npm start`
+- Health check path: `/`
+
+Required Render environment variables:
+
+- `NODE_ENV=production`
+- `MONGO_URI`
+- `JWT_SECRET`
+- `ALLOWED_ORIGINS=https://parwahsports.com,https://www.parwahsports.com`
+- `CLOUD_NAME`
+- `CLOUD_API_KEY`
+- `CLOUD_API_SECRET`
+- `GMAIL_USER`
+- `GMAIL_PASS`
+- `CONTACT_RECIPIENT`
+
+### DNS
+
+- Point `parwahsports.com` to Vercel in Hostinger
+- Add `www.parwahsports.com` to Vercel if you want the `www` version too
+- Keep Render on its default `.onrender.com` URL behind the Vercel rewrite
+
 ## Backend
 
 1. Go to `backend`:
@@ -15,7 +76,7 @@ cd "c:\Users\HP\Desktop\sport academy\pern-app\backend"
 ```powershell
 npm install
 copy .env.example .env
-# edit .env to set MONGO_URI
+# edit .env to set MONGO_URI and other required values
 npm run dev
 ```
 
@@ -46,7 +107,7 @@ Ensure you have a MongoDB instance running (local or cloud-based like MongoDB At
 Set your MongoDB connection URI in `backend/.env`:
 
 ```
-postgresql://username:password@localhost:5432/mydb
+mongodb+srv://username:password@cluster.mongodb.net/parwahsports
 ```
 
 Auth endpoints (backend):
@@ -83,3 +144,5 @@ npm run build-and-serve
 ```
 
 After this, open http://localhost:5000 to view the frontend (and API remains at `/api/*`).
+
+For production on Vercel + Render, do not use `build-and-serve`; deploy `frontend` and `backend` separately.
