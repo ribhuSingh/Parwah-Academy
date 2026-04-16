@@ -497,42 +497,50 @@ function HomePage() {
               ))}
             </div>
           </div>
-<Card className="max-w-md mx-auto p-5 rounded-2xl shadow-md bg-white">
+<Card className="max-w-md mx-auto p-6 rounded-2xl shadow-xl bg-[#0b1220] text-white">
 
   {/* Header */}
-  <div className="text-center mb-4">
-    <p className="text-xs font-semibold text-orange-500 uppercase tracking-wide">
-      Support the Mission
-    </p>
-    <h2 className="text-xl font-bold text-slate-900 mt-1">
-      Scan & Donate
-    </h2>
+  <p className="text-xs font-semibold text-orange-400 uppercase tracking-widest">
+    Support the Mission
+  </p>
+
+  <h2 className="text-2xl font-bold mt-2 text-slate-300 leading-tight">
+    Extend a Helping Hand, <br /> Donate Today!
+  </h2>
+
+  <p className="text-sm text-slate-300 mt-3 leading-relaxed">
+    Contributions help us create stronger access to coaching, equipment, and
+    competitive opportunities for promising athletes.
+  </p>
+
+  {/* QR (BIGGER + CLEAN FRAME) */}
+  <div className="mt-6 flex justify-center">
+    <div className="bg-white p-4 rounded-2xl">
+      <img
+        src="/assets/image.png"
+        alt="QR Code"
+        className="w-64 h-64 sm:w-72 sm:h-72 rounded-xl"
+      />
+    </div>
   </div>
 
-  {/* QR */}
-  <div className="flex justify-center">
-    <img
-      src="/assets/image.png"
-      alt="QR Code"
-      className="w-56 h-56 rounded-xl border border-slate-300"
-    />
-  </div>
-
-  <p className="text-center text-sm text-slate-500 mt-3">
+  <p className="text-center text-sm text-slate-400 mt-3">
     Scan using any UPI app
   </p>
 
-  {/* UPI ID (IMPORTANT ADD BACK) */}
-  <div className="mt-4 bg-slate-100 rounded-lg p-3 flex items-center justify-between gap-2 overflow-hidden">
+  {/* UPI ID */}
+  <div className="mt-5 bg-white/10 rounded-xl px-3 py-3 flex items-center justify-between gap-3">
     
-    <span className="font-mono text-sm text-slate-800 break-all">
+    <span className="font-mono text-xs sm:text-sm break-all leading-snug">
       {upiId}
     </span>
 
     <button
       onClick={handleCopy}
-      className={`text-xs font-semibold shrink-0 ${
-        copied ? "text-green-600" : "text-blue-600"
+      className={`text-xs font-semibold px-2 py-1 rounded-md transition ${
+        copied
+          ? "text-green-400 bg-green-500/10"
+          : "text-blue-400 hover:bg-white/10"
       }`}
     >
       {copied ? "Copied ✓" : "Copy"}
@@ -540,20 +548,23 @@ function HomePage() {
 
   </div>
 
+  {/* Divider */}
+  <div className="my-5 border-t border-white/10" />
+
   {/* Bank Details */}
-  <div className="mt-4 bg-slate-50 rounded-xl p-4 border border-slate-200">
-    <p className="text-sm font-semibold text-slate-700 mb-2">
+  <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+    <p className="text-sm font-semibold mb-3">
       Or transfer directly
     </p>
 
-    <div className="space-y-2 text-slate-900 text-sm">
+    <div className="space-y-3 text-sm">
       <div className="flex justify-between">
-        <span className="text-slate-500">Account No</span>
+        <span className="text-slate-400">Account No</span>
         <span className="font-mono font-semibold">43680897130</span>
       </div>
 
       <div className="flex justify-between">
-        <span className="text-slate-500">IFSC Code</span>
+        <span className="text-slate-400">IFSC Code</span>
         <span className="font-mono font-semibold">SBIN0004530</span>
       </div>
     </div>
