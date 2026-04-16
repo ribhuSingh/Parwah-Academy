@@ -4,6 +4,7 @@ import Card from './components/ui/card'
 import Input from './components/ui/input'
 import Cropper from 'react-easy-crop'
 import getCroppedImg from './utils/cropImage' 
+import { useToast } from './components/ToastContext'
 
 const API_BASE = '/api'
 
@@ -92,7 +93,8 @@ function normalizeId(item) {
   return item?.id || item?._id || item?._id?.toString?.() || ''
 }
 
-export default function AdminDashboard({ token }) {
+export default function AdminGalleryManager({ token }) {
+  const addToast = useToast()
   const [activeTab, setActiveTab] = useState('committee')
   const [loading, setLoading] = useState({ committee: true, gallery: true, events: true })
   const [error, setError] = useState({ committee: '', gallery: '', events: '' })
@@ -109,6 +111,13 @@ export default function AdminDashboard({ token }) {
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
+  
+  // Registration Modal States
+  const [showRegistrationsModal, setShowRegistrationsModal] = useState(false)
+  const [selectedEvent, setSelectedEvent] = useState(null)
+  const [eventRegistrations, setEventRegistrations] = useState([])
+  const [loadingRegistrations, setLoadingRegistrations] = useState(false)
+  const [registrationsError, setRegistrationsError] = useState('')
 
   const authHeaders = useMemo(() => {
     const headers = {}
@@ -335,10 +344,13 @@ export default function AdminDashboard({ token }) {
       if (section === 'gallery') await loadGallery()
       if (section === 'events') await loadEvents()
 
+      addToast(isEdit ? 'Item updated successfully!' : 'Item added successfully!', 'success')
       resetForm(section)
       return data
     } catch (err) {
-      setFormError(prev => ({ ...prev, [section]: err.message || 'Save failed' }))
+      const errorMessage = err.message || 'Save failed'
+      setFormError(prev => ({ ...prev, [section]: errorMessage }))
+      addToast(errorMessage, 'error')
       throw err
     } finally {
       setSubmitting(prev => ({ ...prev, [section]: false }))
@@ -354,9 +366,54 @@ export default function AdminDashboard({ token }) {
       if (section === 'committee') await loadCommittee()
       if (section === 'gallery') await loadGallery()
       if (section === 'events') await loadEvents()
+      addToast('Item deleted successfully.', 'success')
     } catch (err) {
-      alert(err.message || 'Delete failed')
+      addToast(err.message || 'Delete failed', 'error')
     }
+  }
+
+  const viewRegistrations = async (event) => {
+    setSelectedEvent(event)
+    setShowRegistrationsModal(true)
+    setLoadingRegistrations(true)
+    setRegistrationsError('')
+    setEventRegistrations([])
+
+    try {
+      const data = await fetchJson(`${API_BASE}/events/${normalizeId(event)}/registrations`, { method: 'GET' })
+      setEventRegistrations(data)
+    } catch (err) {
+      const errorMessage = err.message || 'Failed to load registrations'
+      setRegistrationsError(errorMessage)
+      addToast(errorMessage, 'error')
+    } finally {
+      setLoadingRegistrations(false)
+    }
+  }
+
+  const exportToCSV = () => {
+    if (!eventRegistrations || eventRegistrations.length === 0) return
+
+    const headers = ['Student Name', 'Phone', 'Email', 'Age', 'School', 'Registration Date']
+    const rows = eventRegistrations.map(reg => [
+      `"${(reg.studentName || '').replace(/"/g, '""')}"`,
+      `"${(reg.phone || '').replace(/"/g, '""')}"`,
+      `"${(reg.email || '').replace(/"/g, '""')}"`,
+      reg.age || '',
+      `"${(reg.schoolName || '').replace(/"/g, '""')}"`,
+      `"${new Date(reg.registrationDate).toLocaleDateString()}"`
+    ])
+
+    const csvContent = [headers.join(','), ...rows.map(e => e.join(','))].join('\n')
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.setAttribute('href', url)
+    link.setAttribute('download', `${(selectedEvent?.title || 'event').replace(/\s+/g, '_')}_registrations.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   const renderCropper = (aspectRatio) => {
@@ -690,8 +747,9 @@ export default function AdminDashboard({ token }) {
                       <p>Date: {event.eventDate ? new Date(event.eventDate).toLocaleDateString() : '—'}</p>
                       <p>Location: {event.location}</p>
                     </div>
-                    <div className="mt-4 flex gap-2">
+                    <div className="mt-4 flex flex-wrap gap-2">
                       <Button variant="ghost" size="sm" onClick={() => editItem('events', event)}>Edit</Button>
+                      <Button variant="ghost" size="sm" onClick={() => viewRegistrations(event)}>Registrations</Button>
                       <Button variant="destructive" size="sm" onClick={() => removeItem('events', normalizeId(event))}>
                         Delete
                       </Button>
@@ -736,6 +794,72 @@ export default function AdminDashboard({ token }) {
         {activeTab === 'gallery' ? renderGallery() : null}
         {activeTab === 'events' ? renderEvents() : null}
       </div>
+
+      {/* Registrations Modal */}
+      {showRegistrationsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-slate-50 rounded-t-xl">
+              <div>
+                <h3 className="text-lg font-semibold text-slate-800">
+                  Registrations: {selectedEvent?.title}
+                </h3>
+                <p className="text-sm text-slate-500">Total Participants: {eventRegistrations.length}</p>
+              </div>
+              <div className="flex items-center gap-4">
+                {eventRegistrations.length > 0 && (
+                  <Button variant="outline" size="sm" onClick={exportToCSV} className="bg-white border-slate-300 text-slate-700 hover:bg-slate-50">
+                    Export CSV
+                  </Button>
+                )}
+                <button onClick={() => setShowRegistrationsModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                  <span className="sr-only">Close</span>
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className="p-6 overflow-y-auto flex-1">
+              {loadingRegistrations ? (
+                <p className="text-slate-600 text-center py-8">Loading registrations...</p>
+              ) : registrationsError ? (
+                <p className="text-rose-600 text-center py-8">{registrationsError}</p>
+              ) : eventRegistrations.length === 0 ? (
+                <p className="text-slate-600 text-center py-8">No registrations found for this event yet.</p>
+              ) : (
+                <div className="overflow-x-auto border border-slate-200 rounded-lg">
+                  <table className="min-w-full divide-y divide-slate-200">
+                    <thead className="bg-slate-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Student Name</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Contact Details</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Age</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">School</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Reg. Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-slate-200">
+                      {eventRegistrations.map(reg => (
+                        <tr key={reg._id} className="hover:bg-slate-50">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">{reg.studentName}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                            <div className="font-medium">{reg.phone}</div>
+                            {reg.email && <div className="text-xs text-slate-400 mt-0.5">{reg.email}</div>}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{reg.age}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{reg.schoolName || '-'}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{new Date(reg.registrationDate).toLocaleDateString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   )
 }

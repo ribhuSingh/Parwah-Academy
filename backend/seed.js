@@ -5,6 +5,7 @@ import Committee from './models/Committee.js'; // Updated path
 import Event from './models/Event.js'; // Updated path
 import GalleryImage from './models/GalleryImage.js'; // Updated path
 import User from './models/User.js'; // Add User model
+import Registration from './models/Registration.js';
 
 dotenv.config();
 const SALT_ROUNDS = 10;
@@ -19,7 +20,8 @@ const seedData = async () => {
     await Event.deleteMany();
     await GalleryImage.deleteMany(); // Clear existing gallery images
     await User.deleteMany(); // Clear existing users
-    console.log('Cleared existing Committee, Event, Gallery, and User data.');
+    await Registration.deleteMany();
+    console.log('Cleared existing Committee, Event, Gallery, User, and Registration data.');
 
     const committeeData = [
       { name: 'Haider Ali Choudhary', role: 'Founder / President', bio: 'BSc (Physical Education), B.Ped, M.Ped. Black Belt in Taekwondo and a National Referee.', category: 'Leadership', imageUrl: '/assets/M2.jpeg' },

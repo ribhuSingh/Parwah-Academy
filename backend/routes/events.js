@@ -1,27 +1,26 @@
-import express from 'express'
-import { protect, admin } from '../middleware/auth.js';
-import { upload } from '../utils/multer.js'; // 🔥 Import multer
-import { 
-  getEvents, 
-  createEvent, 
-  updateEvent, 
-  deleteEvent 
-} from '../controllers/eventController.js'
+import express from 'express';
+import { getEvents, createEvent, updateEvent, deleteEvent } from '../controllers/eventController.js';
+import { createRegistration, getEventRegistrations } from '../controllers/registrationController.js';
+import {admin,protect} from '../middleware/auth.js'
+import { upload } from '../utils/multer.js'; // Corrected import path
 
-const router = express.Router()
+const router = express.Router();
 
-// GET /api/events - list events (public)
-router.get('/', getEvents)
+// --- Event Management Routes (for Admins) ---
+router.route('/')
+    .get(getEvents) // Publicly viewable
+    .post(protect, admin, upload.single('image'), createEvent);
 
-// POST /api/events - create event (protected, admin)
-// 🔥 Add upload.single('image') AFTER auth middleware
-router.post('/', protect, admin, upload.single('image'), createEvent)
+router.route('/:id')
+    .patch(protect, admin, upload.single('image'), updateEvent)
+    .delete(protect, admin, deleteEvent);
 
-// PATCH /api/events/:id - update event (protected, admin)
-// 🔥 Add upload.single('image')
-router.patch('/:id', protect, admin, upload.single('image'), updateEvent)
 
-// DELETE /api/events/:id - delete event (protected, admin)
-router.delete('/:id', protect, admin, deleteEvent)
+// --- Event Registration Routes ---
+router.route('/:id/register')
+    .post(createRegistration); // Public route for students to register
 
-export default router
+router.route('/:id/registrations')
+    .get(protect, admin, getEventRegistrations); // Admin-only route to see who registered
+
+export default router;

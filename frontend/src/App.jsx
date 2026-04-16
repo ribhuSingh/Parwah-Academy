@@ -380,6 +380,11 @@ function HomePage() {
   const [currentIndex, setCurrentIndex] = useState(0)
 
   useEffect(() => {
+    // Wake up the server by making a lightweight API call on initial load
+    fetch('/api/gallery').catch((err) => console.error('Failed to wake up server:', err))
+  }, [])
+
+  useEffect(() => {
     const interval = window.setInterval(() => {
       setCurrentIndex((current) => (current + 1) % heroSlides.length)
     }, 5000)
@@ -493,7 +498,7 @@ function HomePage() {
               opportunities for promising athletes.
             </p>
             <div className="donation-qr-wrap">
-              <img src="/assets/QR.png" alt="Donate QR Code" className="donation-qr" />
+              <img src="/assets/image.png" alt="Donate QR Code" className="donation-qr" />
             </div>
           </Card>
         </div>
