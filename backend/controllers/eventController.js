@@ -3,7 +3,7 @@ import cloudinary from '../utils/cloudinary.js' // 🔥 Import Cloudinary
 
 export async function getEvents(req, res) {
   try {
-    const events = await Event.find().sort({ eventDate: 1 }).lean()
+    const events = await Event.find().sort({ eventDate: -1 }).lean()
     const result = events.map(e => ({ ...e, id: e._id }))
     res.json(result)
   } catch (err) {

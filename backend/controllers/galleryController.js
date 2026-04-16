@@ -59,9 +59,26 @@ export async function patchGallery(req, res) {
       return res.status(400).json({ error: 'Invalid ID' })
     }
 
+    let updateData = { ...req.body }
+
+    // 🔥 If they are updating the gallery item WITH a new image file
+    if (req.file) {
+      const uploadResult = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: 'gallery' },
+          (error, result) => {
+            if (error) reject(error)
+            else resolve(result)
+          }
+        )
+        stream.end(req.file.buffer)
+      })
+      updateData.src = uploadResult.secure_url
+    }
+
     const updatedImage = await GalleryImage.findByIdAndUpdate(
       id,
-      { $set: req.body },
+      { $set: updateData },
       { new: true, runValidators: true }
     )
 

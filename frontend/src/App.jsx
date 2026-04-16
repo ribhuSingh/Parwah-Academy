@@ -117,7 +117,7 @@ const homePageResources = [
 
 const homePageCommitteeMembers = [
   { id: 1, image: '/assets/M2.jpeg', name: 'Haider Ali Choudhary', role: 'Founder / President' },
-  { id: 2, image: '/assets/M4.jpeg', name: 'Digvijay Singh', role: 'Head Coach' },
+  { id: 2, image: '/assets/M4.jpeg', name: 'Ritik Singh', role: 'Head Coach' },
   { id: 3, image: '/assets/M1.jpeg', name: 'M. Mustkeem Ansari', role: 'National Coach' },
 ]
 
@@ -500,6 +500,12 @@ function HomePage() {
             <div className="donation-qr-wrap">
               <img src="/assets/image.png" alt="Donate QR Code" className="donation-qr" />
             </div>
+            <a
+              href="upi://pay?pa=SBIBHIM.INSTANT48341608853913160@sbipay&pn=Parwah%20Sports%20Charitable%20Trust&cu=INR"
+              className="mt-4 block text-center text-sm font-semibold text-slate-800 break-all hover:text-blue-600 transition-colors"
+            >
+              UPI ID: SBIBHIM.INSTANT48341608853913160@sbipay
+            </a>
           </Card>
         </div>
       </section>

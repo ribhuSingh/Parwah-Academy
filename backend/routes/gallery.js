@@ -23,7 +23,7 @@ router.post('/',authMiddleware, postGallery)
 router.post('/upload',authMiddleware, upload.single('image'), uploadGalleryImage)
 
 // PATCH
-router.patch('/:id',authMiddleware, patchGallery)
+router.patch('/:id', authMiddleware, upload.single('image'), patchGallery)
 
 // DELETE
 router.delete('/:id',authMiddleware, deleteGallery)

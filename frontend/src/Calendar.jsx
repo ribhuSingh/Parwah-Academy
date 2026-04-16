@@ -45,21 +45,44 @@ export default function Calendar() {
       )}
 
       <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {events.map(event => (
-          <Card key={event.id} className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-            {event.imageUrl && <img src={event.imageUrl} alt={event.title} className="aspect-[16/9] w-full object-cover" />}
-            <div className="flex flex-1 flex-col p-6">
-              <h3 className="text-xl font-semibold text-slate-900">{event.title}</h3>
-              <p className="mt-1 text-sm font-medium text-slate-500">{new Date(event.eventDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} &bull; {event.location}</p>
-              <p className="mt-3 flex-1 text-slate-600">{event.description}</p>
-              <div className="mt-6">
-                <Button onClick={() => handleRegisterClick(event)} className="w-full">
-                  Register for this Event
-                </Button>
+        {events.map(event => {
+          const eventDate = new Date(event.eventDate);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0); // Reset time to midnight for accurate day comparison
+          const isPastEvent = eventDate < today;
+
+          return (
+            <Card key={event.id} className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+              <div className="relative">
+                {event.imageUrl ? (
+                  <img src={event.imageUrl} alt={event.title} className="aspect-[16/9] w-full object-cover" />
+                ) : (
+                  <div className="flex aspect-[16/9] w-full items-center justify-center bg-slate-100 text-sm text-slate-500">
+                    No image available
+                  </div>
+                )}
+                
+                {isPastEvent && (
+                  <div className="absolute top-4 right-4 rounded-full bg-slate-900/80 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-sm backdrop-blur-md">
+                    Past Event
+                  </div>
+                )}
               </div>
-            </div>
-          </Card>
-        ))}
+              <div className="flex flex-1 flex-col p-6">
+                <h3 className="text-xl font-semibold text-slate-900">{event.title}</h3>
+                <p className="mt-1 text-sm font-medium text-slate-500">{new Date(event.eventDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} &bull; {event.location}</p>
+                <p className="mt-3 flex-1 text-slate-600">{event.description}</p>
+                {!isPastEvent && (
+                  <div className="mt-6">
+                    <Button onClick={() => handleRegisterClick(event)} className="w-full">
+                      Register for this Event
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </Card>
+          );
+        })}
       </div>
 
       {selectedEvent && (
