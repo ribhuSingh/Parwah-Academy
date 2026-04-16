@@ -502,10 +502,13 @@ function HomePage() {
             </div>
             <a
               href="upi://pay?pa=SBIBHIM.INSTANT48341608853913160@sbipay&pn=Parwah%20Sports%20Charitable%20Trust&cu=INR"
-              className="mt-4 block text-center text-sm font-semibold text-slate-800 break-all hover:text-blue-600 transition-colors"
+              className="mt-6 w-full inline-flex items-center justify-center rounded-lg text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 h-11 px-6 transition-colors shadow-sm"
             >
-              UPI ID: SBIBHIM.INSTANT48341608853913160@sbipay
+              Click to Pay via UPI
             </a>
+            <p className="mt-3 text-center text-xs text-slate-500 break-all">
+              Or copy UPI ID: SBIBHIM.INSTANT48341608853913160@sbipay
+            </p>
           </Card>
         </div>
       </section>
