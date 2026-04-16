@@ -378,7 +378,15 @@ function Header({ token, path }) {
 
 function HomePage() {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [copied, setCopied] = useState(false)
 
+  const upiId = "SBIBHIM.INSTANT48341608853913160@sbipay"
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(upiId)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
   useEffect(() => {
     // Wake up the server by making a lightweight API call on initial load
     fetch('/api/gallery').catch((err) => console.error('Failed to wake up server:', err))
@@ -489,27 +497,69 @@ function HomePage() {
               ))}
             </div>
           </div>
+<Card className="max-w-md mx-auto p-5 rounded-2xl shadow-md bg-white">
 
-          <Card className="donation-panel">
-            <p className="eyebrow">Support The Mission</p>
-            <h2>Extend a Helping Hand, Donate Today!</h2>
-            <p>
-              Contributions help us create stronger access to coaching, equipment, and competitive
-              opportunities for promising athletes.
-            </p>
-            <div className="donation-qr-wrap">
-              <img src="/assets/image.png" alt="Donate QR Code" className="donation-qr" />
-            </div>
-            <a
-              href="upi://pay?pa=SBIBHIM.INSTANT48341608853913160@sbipay&pn=Parwah%20Sports%20Charitable%20Trust&cu=INR"
-              className="mt-6 w-full inline-flex items-center justify-center rounded-lg text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 h-11 px-6 transition-colors shadow-sm"
-            >
-              Click to Pay via UPI
-            </a>
-            <p className="mt-3 text-center text-xs text-slate-500 break-all">
-              Or copy UPI ID: SBIBHIM.INSTANT48341608853913160@sbipay
-            </p>
-          </Card>
+  {/* Header */}
+  <div className="text-center mb-4">
+    <p className="text-xs font-semibold text-orange-500 uppercase tracking-wide">
+      Support the Mission
+    </p>
+    <h2 className="text-xl font-bold text-slate-900 mt-1">
+      Scan & Donate
+    </h2>
+  </div>
+
+  {/* QR */}
+  <div className="flex justify-center">
+    <img
+      src="/assets/image.png"
+      alt="QR Code"
+      className="w-56 h-56 rounded-xl border border-slate-300"
+    />
+  </div>
+
+  <p className="text-center text-sm text-slate-500 mt-3">
+    Scan using any UPI app
+  </p>
+
+  {/* UPI ID (IMPORTANT ADD BACK) */}
+  <div className="mt-4 bg-slate-100 rounded-lg p-3 flex items-center justify-between gap-2 overflow-hidden">
+    
+    <span className="font-mono text-sm text-slate-800 break-all">
+      {upiId}
+    </span>
+
+    <button
+      onClick={handleCopy}
+      className={`text-xs font-semibold shrink-0 ${
+        copied ? "text-green-600" : "text-blue-600"
+      }`}
+    >
+      {copied ? "Copied ✓" : "Copy"}
+    </button>
+
+  </div>
+
+  {/* Bank Details */}
+  <div className="mt-4 bg-slate-50 rounded-xl p-4 border border-slate-200">
+    <p className="text-sm font-semibold text-slate-700 mb-2">
+      Or transfer directly
+    </p>
+
+    <div className="space-y-2 text-slate-900 text-sm">
+      <div className="flex justify-between">
+        <span className="text-slate-500">Account No</span>
+        <span className="font-mono font-semibold">43680897130</span>
+      </div>
+
+      <div className="flex justify-between">
+        <span className="text-slate-500">IFSC Code</span>
+        <span className="font-mono font-semibold">SBIN0004530</span>
+      </div>
+    </div>
+  </div>
+
+</Card>
         </div>
       </section>
 
