@@ -283,7 +283,7 @@ function Header({ token, path }) {
                     >
                       Login
                     </button>
-                    <button
+                    {/* <button
                       onClick={() => {
                         setAdminDropdownOpen(false);
                         navigateTo('/admin/register')
@@ -291,7 +291,7 @@ function Header({ token, path }) {
                       className="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                     >
                       Register
-                    </button>
+                    </button> */}
                   </>
                 )}
               </div>
