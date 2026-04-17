@@ -360,12 +360,12 @@ function Header({ token, path }) {
                   >
                     Login
                   </Button>
-                  <Button 
+                  {/* <Button 
                     onClick={() => { setMenuOpen(false); navigateTo('/admin/register'); }}
                     className="w-full text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     Register
-                  </Button>
+                  </Button> */}
                 </>
               )}
             </div>
