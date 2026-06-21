@@ -4,6 +4,8 @@ import Button from './components/ui/button'
 import Card from './components/ui/card'
 import Contact from './Contact'
 import Gallery from './Gallery'
+import Media from './Media'
+import MedicalServices from './MedicalServices'
 import Footprint from './Footprint'
 import GetInvolved from './GetInvolved'
 import Committee from './Partners'
@@ -12,6 +14,8 @@ import WhatWeDo from './WhatWeDo'
 import Calendar from './Calendar'
 import AdminGalleryManager from './AdminGalleryManager'
 import Register from './Register'
+import PrivacyPolicy from './PolicyPage'
+import LegalPolicy from './LegalPolicy'
 
 const navigationLinks = [
   { href: '/about', label: 'About Us' },
@@ -19,12 +23,14 @@ const navigationLinks = [
   { href: '/calendar', label: 'Upcoming Events' }, // Added this line
   { href: '/impact', label: 'Our Impact' },
   { href: '/gallery', label: 'Gallery' },
+  { href: '/media', label: 'Media' },
+  { href: '/medical-services', label: 'Medical Services' },
   { href: '/team', label: 'Our Team' },
   { href: '/get-involved', label: 'Get Involved' },
   { href: '/contact', label: 'Contact' },
 ]
 
-const heroSlides = [
+const DEFAULT_HERO_SLIDES = [
   {
     src: '/assets/C1.jpeg',
     alt: 'Young athletes training together',
@@ -113,12 +119,6 @@ const homePageResources = [
     cta: 'Join Our Mission',
     href: '/get-involved',
   },
-]
-
-const homePageCommitteeMembers = [
-  { id: 1, image: '/assets/M2.jpeg', name: 'Haider Ali Choudhary', role: 'Founder / President' },
-  { id: 2, image: '/assets/M4.jpeg', name: 'Ritik Singh', role: 'Head Coach' },
-  { id: 3, image: '/assets/M1.jpeg', name: 'M. Mustkeem Ansari', role: 'National Coach' },
 ]
 
 function getCurrentPath() {
@@ -260,7 +260,7 @@ function Header({ token, path }) {
                       }}
                       className="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-200"
                     >
-                      Manage Gallery
+                      Manage Content
                     </button>
                     <button
                       onClick={() => {
@@ -342,7 +342,7 @@ function Header({ token, path }) {
                     onClick={() => { setMenuOpen(false); navigateTo('/admin/gallery'); }}
                     className="w-full text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white"
                   >
-                    Manage Gallery
+                    Manage Content
                   </Button>
                   <Button 
                     onClick={() => { setMenuOpen(false); navigateTo('/admin'); }}
@@ -379,6 +379,7 @@ function Header({ token, path }) {
 function HomePage() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [copied, setCopied] = useState(false)
+  const [slides, setSlides] = useState(DEFAULT_HERO_SLIDES)
 
   const upiId = "SBIBHIM.INSTANT48341608853913160@sbipay"
 
@@ -393,18 +394,42 @@ function HomePage() {
   }, [])
 
   useEffect(() => {
-    const interval = window.setInterval(() => {
-      setCurrentIndex((current) => (current + 1) % heroSlides.length)
-    }, 5000)
+    let ignore = false
 
-    return () => window.clearInterval(interval)
+    async function loadSlides() {
+      try {
+        const res = await fetch('/api/home-slides')
+        if (!res.ok) return
+        const data = await res.json()
+        if (!ignore && Array.isArray(data) && data.length > 0) {
+          setSlides(data)
+          setCurrentIndex(0)
+        }
+      } catch (err) {
+        console.error('Failed to load hero slides:', err)
+      }
+    }
+
+    loadSlides()
+
+    return () => {
+      ignore = true
+    }
   }, [])
+
+  useEffect(() => {
+    if (!slides || slides.length === 0) return
+    const interval = window.setInterval(() => {
+      setCurrentIndex((current) => (current + 1) % slides.length)
+    }, 5000)
+    return () => window.clearInterval(interval)
+  }, [slides])
 
   return (
     <main>
       <section className="hero-section">
         <div className="hero-slides">
-          {heroSlides.map((slide, index) => (
+          {slides.map((slide, index) => (
             <div
               key={slide.title}
               className={`hero-slide ${index === currentIndex ? 'is-active' : ''}`}
@@ -421,7 +446,7 @@ function HomePage() {
             <p className="eyebrow">Supporting Athletes With Purpose</p>
             <h1>Building champions through access, mentorship, and opportunity.</h1>
             <p className="hero-description">
-              {heroSlides[currentIndex].description}. At Parwah Sports Charitable Trust, we support
+              {slides[currentIndex]?.description}. At Parwah Sports Charitable Trust, we support
               emerging talent with training, events, and a platform to grow.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -434,10 +459,10 @@ function HomePage() {
 
           <div className="hero-panel">
             <p className="hero-panel-kicker">Featured Focus</p>
-            <h2>{heroSlides[currentIndex].title}</h2>
-            <p>{heroSlides[currentIndex].description}</p>
+            <h2>{slides[currentIndex]?.title}</h2>
+            <p>{slides[currentIndex]?.description}</p>
             <div className="hero-dots">
-              {heroSlides.map((slide, index) => (
+              {slides.map((slide, index) => (
                 <button
                   key={slide.title}
                   type="button"
@@ -602,30 +627,6 @@ function HomePage() {
           </div>
         </div>
       </section>
-
-      <section id="committee" className="section-block section-contrast">
-        <div className="shell">
-          <div className="section-heading">
-            <p className="eyebrow">Committee Members</p>
-            <h2>Meet the people who help drive the mission forward.</h2>
-            <p>
-              Our committee supports community trust-building, event coordination, and athlete
-              development across the organization.
-            </p>
-          </div>
-          <div className="committee-grid">
-            {homePageCommitteeMembers.map((member) => (
-              <Card key={member.id} className="committee-card">
-                <div className="committee-photo-wrap">
-                  <img src={member.image} alt={member.name} className="committee-photo" />
-                </div>
-                <h3>{member.name}</h3>
-                <p className="text-sm text-slate-500">{member.role}</p>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
     </main>
   )
 }
@@ -643,7 +644,7 @@ function Footer() {
               </span>
             </ScrollLink>
             <p className="text-sm text-muted-foreground mb-4">
-              Promoting excellence in sports and fostering talent development since 1985.
+              Promoting excellence in sports and fostering talent development since 2024.
             </p>
             <div className="flex gap-4">
               <a href="https://www.facebook.com/share/18r2xWUuhF/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
@@ -703,7 +704,10 @@ function Footer() {
                 <ScrollLink href="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact Us</ScrollLink>
               </li> {/* New: Media Gallery (links to Gallery) */}
               <li>
-                <ScrollLink href="/gallery" className="text-sm text-muted-foreground hover:text-primary transition-colors">Media Gallery</ScrollLink>
+                <ScrollLink href="/media" className="text-sm text-muted-foreground hover:text-primary transition-colors">Media</ScrollLink>
+              </li>
+              <li>
+                <ScrollLink href="/medical-services" className="text-sm text-muted-foreground hover:text-primary transition-colors">Medical Services</ScrollLink>
               </li>
             </ul>
           </div>
@@ -711,16 +715,10 @@ function Footer() {
             <h3 className="font-medium text-lg mb-4 text-slate-900">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <ScrollLink href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Privacy Policy</ScrollLink>
+                <ScrollLink href="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Privacy Policy</ScrollLink>
               </li>
               <li>
-                <ScrollLink href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms of Service</ScrollLink>
-              </li>
-              <li>
-                <ScrollLink href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Code of Conduct</ScrollLink>
-              </li>
-              <li>
-                <ScrollLink href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Anti-Doping Policy</ScrollLink>
+                <ScrollLink href="/legal-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Legal Policy</ScrollLink>
               </li>
             </ul>
           </div>
@@ -988,6 +986,8 @@ export default function App() {
     }
     if (path === '/contact') return <Contact />
     if (path === '/gallery') return <Gallery />
+    if (path === '/media') return <Media />
+    if (path === '/medical-services') return <MedicalServices />
     if (path === '/impact') return <Footprint />
     // if (path === '/resources') return <Resources /> // Removed
     if (path === '/get-involved') return <GetInvolved />
@@ -995,6 +995,8 @@ export default function App() {
     if (path === '/about') return <Organization />
     if (path === '/programs') return <WhatWeDo />
     if (path === '/calendar') return <Calendar />
+    if (path === '/privacy-policy') return <PrivacyPolicy />
+    if (path === '/legal-policy') return <LegalPolicy />
 
     return <HomePage />
   }, [loadingUsers, path, token, user, users, usersError])

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Card from './components/ui/card';
 import Button from './components/ui/button';
 import RegistrationModal from './components/RegistrationModal'; // Import the modal
+import ImageCarousel from './components/ImageCarousel';
 
 export default function Calendar() {
   const [events, setEvents] = useState([]);
@@ -50,18 +51,20 @@ export default function Calendar() {
           const today = new Date();
           today.setHours(0, 0, 0, 0); // Reset time to midnight for accurate day comparison
           const isPastEvent = eventDate < today;
+          const hasMultipleImages = Array.isArray(event.imageUrls) && event.imageUrls.length > 1;
 
           return (
             <Card key={event.id} className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
               <div className="relative">
-                {event.imageUrl ? (
-                  <img src={event.imageUrl} alt={event.title} className="aspect-[16/9] w-full object-cover" />
-                ) : (
-                  <div className="flex aspect-[16/9] w-full items-center justify-center bg-slate-100 text-sm text-slate-500">
-                    No image available
-                  </div>
-                )}
-                
+                <ImageCarousel
+                  imageUrls={event.imageUrls}
+                  src={event.imageUrl}
+                  alt={event.title}
+                  aspectClass="aspect-[16/9]"
+                  showCountBadge={!isPastEvent && hasMultipleImages}
+                  badgeText={hasMultipleImages ? `${event.imageUrls.length} Photos` : undefined}
+                />
+
                 {isPastEvent && (
                   <div className="absolute top-4 right-4 rounded-full bg-slate-900/80 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-sm backdrop-blur-md">
                     Past Event

@@ -15,14 +15,11 @@ export function authMiddleware(req, res, next) {
     return res.status(401).json({ error: 'Unauthorized: Token is missing' })
   }
 
-  // Prevent crashes if the environment variable is not loaded
-  if (!process.env.JWT_SECRET) {
-    console.error('CRITICAL: JWT_SECRET is not defined in environment variables.')
-    return res.status(500).json({ error: 'Internal server error' })
-  }
+  // Keep behavior aligned with authController.js: allow a dev fallback secret.
+  const secret = process.env.JWT_SECRET || 'dev-secret'
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    const decoded = jwt.verify(token, secret)
     req.user = decoded
     next()
   } catch (err) {

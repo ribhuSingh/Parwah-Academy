@@ -1,50 +1,48 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import ImageCarousel from './components/ImageCarousel'
 
-const Gallery = () => {
-  const [allImages, setAllImages] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [activeCategory, setActiveCategory] = useState("All");
+export default function Media() {
+  const [allImages, setAllImages] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [activeCategory, setActiveCategory] = useState('All')
 
   useEffect(() => {
     const fetchImages = async () => {
-      setLoading(true);
-      setError('');
+      setLoading(true)
+      setError('')
       try {
-        const res = await fetch('/api/gallery');
-        if (!res.ok) throw new Error('Failed to fetch gallery images');
-        const data = await res.json();
-        setAllImages(data);
+        const res = await fetch('/api/media')
+        if (!res.ok) throw new Error('Failed to fetch media images')
+        const data = await res.json()
+        setAllImages(Array.isArray(data) ? data : [])
       } catch (err) {
-        console.error(err);
-        setError('Failed to load gallery images. Please try again later.');
+        console.error(err)
+        setError('Failed to load media gallery. Please try again later.')
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchImages();
-  }, []);
+    fetchImages()
+  }, [])
 
   const categories = useMemo(() => {
-    const uniqueCategories = new Set(allImages.map(img => img.category));
-    return ["All", ...Array.from(uniqueCategories)];
-  }, [allImages]);
+    const uniqueCategories = new Set(allImages.map((img) => img.category).filter(Boolean))
+    return ['All', ...Array.from(uniqueCategories)]
+  }, [allImages])
 
   const filteredImages = useMemo(() => {
-    if (activeCategory === "All") {
-      return allImages;
-    }
-    return allImages.filter(img => img.category === activeCategory);
-  }, [activeCategory, allImages]);
+    if (activeCategory === 'All') return allImages
+    return allImages.filter((img) => img.category === activeCategory)
+  }, [activeCategory, allImages])
 
   if (loading) {
-    return <div className="text-center py-12 text-lg text-gray-600">Loading gallery...</div>;
+    return <div className="text-center py-12 text-lg text-gray-600">Loading media...</div>
   }
 
   if (error) {
-    return <div className="text-center py-12 text-lg text-red-600">{error}</div>;
+    return <div className="text-center py-12 text-lg text-red-600">{error}</div>
   }
 
   return (
@@ -52,9 +50,9 @@ const Gallery = () => {
       <main className="flex-1">
         <section className="bg-gradient-to-b from-navy-700 to-blue-800 text-white py-16 md:py-20 text-center">
           <div className="container mx-auto px-4">
-            <h1 className="text-5xl font-extrabold tracking-tight mb-6">Gallery</h1>
+            <h1 className="text-5xl font-extrabold tracking-tight mb-6">Media</h1>
             <p className="text-white/80 text-lg max-w-2xl mx-auto">
-              A showcase of our athletes, events, and community work. See the passion and dedication in action.
+              Photos and highlights from training, tournaments, camps, and community events.
             </p>
           </div>
         </section>
@@ -62,7 +60,7 @@ const Gallery = () => {
         <section className="py-12 md:py-16">
           <div className="container mx-auto px-4">
             <div className="flex justify-center flex-wrap gap-2 mb-10">
-              {categories.map(category => (
+              {categories.map((category) => (
                 <button
                   key={category}
                   onClick={() => setActiveCategory(category)}
@@ -83,7 +81,7 @@ const Gallery = () => {
               ) : (
                 filteredImages.map((image) => (
                   <div
-                    key={image._id} 
+                    key={image._id || image.id}
                     className="bg-white border rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 flex flex-col items-center text-center"
                   >
                     <ImageCarousel
@@ -110,5 +108,3 @@ const Gallery = () => {
     </div>
   )
 }
-
-export default Gallery

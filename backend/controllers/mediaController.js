@@ -1,4 +1,4 @@
-import GalleryImage from '../models/GalleryImage.js'
+import MediaImage from '../models/MediaImage.js'
 import mongoose from 'mongoose'
 import cloudinary from '../utils/cloudinary.js'
 
@@ -12,21 +12,12 @@ async function uploadToCloudinary(buffer, folder) {
   })
 }
 
-function collectFiles(req) {
-  const files = []
-  if (req.file) files.push(req.file)
-  if (Array.isArray(req.files)) files.push(...req.files)
-  if (req.files?.image?.length) files.push(...req.files.image)
-  if (req.files?.images?.length) files.push(...req.files.images)
-  return files
-}
-
-export async function getGallery(req, res) {
+export async function getMedia(req, res) {
   try {
     const { category } = req.query
     const filter = category ? { category } : {}
 
-    const images = await GalleryImage.find(filter).sort({ order: 1, createdAt: -1 }).lean()
+    const images = await MediaImage.find(filter).sort({ order: 1, createdAt: -1 }).lean()
     res.json(
       images.map((img) => ({
         ...img,
@@ -41,20 +32,19 @@ export async function getGallery(req, res) {
     )
   } catch (error) {
     console.error(error)
-    res.status(500).json({ error: 'Failed to fetch gallery images' })
+    res.status(500).json({ error: 'Failed to fetch media images' })
   }
 }
 
-// POST (manual URL - keep for fallback)
-export async function postGallery(req, res) {
+// Optional manual add (URL)
+export async function postMedia(req, res) {
   try {
     const { src, alt, category, caption, order } = req.body
-
     if (!src || !alt || !category) {
       return res.status(400).json({ error: 'src, alt, and category are required' })
     }
 
-    const newImage = await GalleryImage.create({
+    const newImage = await MediaImage.create({
       src,
       imageUrls: [src],
       alt,
@@ -70,36 +60,38 @@ export async function postGallery(req, res) {
   }
 }
 
-export async function patchGallery(req, res) {
+export async function patchMedia(req, res) {
   try {
     const { id } = req.params
-
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: 'Invalid ID' })
     }
 
     const updateData = { ...req.body }
 
-    const files = collectFiles(req)
+    const files = []
+    if (req.file) files.push(req.file)
+    if (Array.isArray(req.files)) files.push(...req.files)
+    if (req.files?.image?.length) files.push(...req.files.image)
+    if (req.files?.images?.length) files.push(...req.files.images)
+
     if (files.length > 0) {
       const urls = []
       for (const file of files) {
-        const uploadResult = await uploadToCloudinary(file.buffer, 'gallery')
+        const uploadResult = await uploadToCloudinary(file.buffer, 'media')
         urls.push(uploadResult.secure_url)
       }
       updateData.src = urls[0]
       updateData.imageUrls = urls
     }
 
-    const updatedImage = await GalleryImage.findByIdAndUpdate(
+    const updatedImage = await MediaImage.findByIdAndUpdate(
       id,
       { $set: updateData },
       { new: true, runValidators: true }
     )
 
-    if (!updatedImage) {
-      return res.status(404).json({ error: 'Image not found' })
-    }
+    if (!updatedImage) return res.status(404).json({ error: 'Image not found' })
 
     res.json({ message: 'Image updated successfully', data: updatedImage })
   } catch (error) {
@@ -108,19 +100,15 @@ export async function patchGallery(req, res) {
   }
 }
 
-export async function deleteGallery(req, res) {
+export async function deleteMedia(req, res) {
   try {
     const { id } = req.params
-
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: 'Invalid ID' })
     }
 
-    const deletedImage = await GalleryImage.findByIdAndDelete(id)
-
-    if (!deletedImage) {
-      return res.status(404).json({ error: 'Image not found' })
-    }
+    const deleted = await MediaImage.findByIdAndDelete(id)
+    if (!deleted) return res.status(404).json({ error: 'Image not found' })
 
     res.json({ message: 'Image deleted successfully' })
   } catch (error) {
@@ -130,28 +118,31 @@ export async function deleteGallery(req, res) {
 }
 
 // Cloudinary upload (supports one or many files)
-export async function uploadGalleryImage(req, res) {
+export async function uploadMediaImages(req, res) {
   try {
-    const files = collectFiles(req)
+    const files = []
+
+    if (req.file) files.push(req.file)
+    if (Array.isArray(req.files)) files.push(...req.files)
+    if (req.files?.image?.length) files.push(...req.files.image)
+    if (req.files?.images?.length) files.push(...req.files.images)
 
     if (files.length === 0) {
       return res.status(400).json({ error: 'No file uploaded' })
     }
 
     const { alt, category, caption, order } = req.body
-    if (!category) {
-      return res.status(400).json({ error: 'category is required' })
-    }
+    if (!category) return res.status(400).json({ error: 'category is required' })
 
     const urls = []
     for (const file of files) {
-      const uploadResult = await uploadToCloudinary(file.buffer, 'gallery')
+      const uploadResult = await uploadToCloudinary(file.buffer, 'media')
       urls.push(uploadResult.secure_url)
     }
 
-    const safeAlt = (alt || '').trim() || (files[0]?.originalname ? files[0].originalname : 'Gallery image')
+    const safeAlt = (alt || '').trim() || (files[0]?.originalname ? files[0].originalname : 'Media image')
 
-    const doc = await GalleryImage.create({
+    const doc = await MediaImage.create({
       src: urls[0],
       imageUrls: urls,
       alt: safeAlt,

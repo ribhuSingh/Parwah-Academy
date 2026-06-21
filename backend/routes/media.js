@@ -1,22 +1,21 @@
 import express from 'express'
 import {
-  getGallery,
-  postGallery,
-  patchGallery,
-  deleteGallery,
-  uploadGalleryImage,
-} from '../controllers/galleryController.js'
+  getMedia,
+  postMedia,
+  patchMedia,
+  deleteMedia,
+  uploadMediaImages,
+} from '../controllers/mediaController.js'
 import { authMiddleware } from '../middleware/authMiddleware.js'
 import { upload } from '../utils/multer.js'
 
 const router = express.Router()
 
-router.get('/', getGallery)
+router.get('/', getMedia)
 
-// Optional manual URL add
-router.post('/', authMiddleware, postGallery)
+router.post('/', authMiddleware, postMedia)
 
-// Cloudinary upload (supports `image` (single) or `images` (multiple))
+// Supports either `image` (single) or `images` (multiple).
 router.post(
   '/upload',
   authMiddleware,
@@ -24,7 +23,7 @@ router.post(
     { name: 'image', maxCount: 1 },
     { name: 'images', maxCount: 30 },
   ]),
-  uploadGalleryImage
+  uploadMediaImages
 )
 
 router.patch(
@@ -34,8 +33,8 @@ router.patch(
     { name: 'image', maxCount: 1 },
     { name: 'images', maxCount: 30 },
   ]),
-  patchGallery
+  patchMedia
 )
-router.delete('/:id', authMiddleware, deleteGallery)
+router.delete('/:id', authMiddleware, deleteMedia)
 
 export default router

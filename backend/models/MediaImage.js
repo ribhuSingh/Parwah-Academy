@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-const galleryImageSchema = new mongoose.Schema(
+const mediaImageSchema = new mongoose.Schema(
   {
     src: { type: String, required: true },
     imageUrls: { type: [String], default: [] }, // Multiple images per card (optional)
@@ -10,6 +10,6 @@ const galleryImageSchema = new mongoose.Schema(
     order: { type: Number, default: 0 },
   },
   { timestamps: true }
-);
+)
 
-export default mongoose.model('GalleryImage', galleryImageSchema);
+export default mongoose.model('MediaImage', mediaImageSchema)

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
 const eventSchema = new mongoose.Schema(
   {
@@ -6,9 +6,11 @@ const eventSchema = new mongoose.Schema(
     description: { type: String, required: true },
     eventDate: { type: Date, required: true },
     location: { type: String, required: true },
-    imageUrl: { type: String, default: '' }, // 🔥 Added for event images
+    imageUrl: { type: String, default: '' }, // Legacy single image URL
+    imageUrls: { type: [String], default: [] }, // Multiple images (optional)
   },
   { timestamps: true }
-);
+)
 
-export default mongoose.model('Event', eventSchema);
+export default mongoose.model('Event', eventSchema)
+

@@ -11,6 +11,12 @@ import partnersRouter from './routes/partners.js'
 import committeeRouter from './routes/committee.js'
 import eventsRouter from './routes/events.js'
 import galleryRouter from './routes/gallery.js'; // New import
+import mediaRouter from './routes/media.js'
+import medicalServicesRouter from './routes/medicalServices.js'
+import heroSlidesRouter from './routes/heroSlides.js'
+import programsRouter from './routes/programs.js'
+import footprintRouter from './routes/footprint.js'
+import getInvolvedRouter from './routes/getInvolved.js'
 import connectDB from './db.js'
 
 dotenv.config()
@@ -59,6 +65,12 @@ app.use('/api/partners', partnersRouter)
 app.use('/api/committee', committeeRouter)
 app.use('/api/events', eventsRouter)
 app.use('/api/gallery', galleryRouter); // New route
+app.use('/api/media', mediaRouter)
+app.use('/api/medical-services', medicalServicesRouter)
+app.use('/api/home-slides', heroSlidesRouter)
+app.use('/api/programs', programsRouter)
+app.use('/api/footprint', footprintRouter)
+app.use('/api/get-involved', getInvolvedRouter)
 
 app.get('/', (req, res) => res.send('PERN backend running'))
 

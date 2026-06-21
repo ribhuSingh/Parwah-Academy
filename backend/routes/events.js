@@ -9,10 +9,26 @@ const router = express.Router();
 // --- Event Management Routes (for Admins) ---
 router.route('/')
     .get(getEvents) // Publicly viewable
-    .post(protect, admin, upload.single('image'), createEvent);
+    .post(
+      protect,
+      admin,
+      upload.fields([
+        { name: 'image', maxCount: 1 },
+        { name: 'images', maxCount: 30 },
+      ]),
+      createEvent
+    );
 
 router.route('/:id')
-    .patch(protect, admin, upload.single('image'), updateEvent)
+    .patch(
+      protect,
+      admin,
+      upload.fields([
+        { name: 'image', maxCount: 1 },
+        { name: 'images', maxCount: 30 },
+      ]),
+      updateEvent
+    )
     .delete(protect, admin, deleteEvent);
 
 
