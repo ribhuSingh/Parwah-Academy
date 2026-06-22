@@ -221,14 +221,14 @@ function Header({ token, path }) {
         </button>
 
         {/* Navigation - Hidden on mobile, shown on lg screens */}
-        <nav className="hidden items-center gap-6 lg:flex flex-1 justify-center">
+        <nav className="hidden items-center gap-3 lg:gap-4 xl:gap-6 lg:flex flex-1 justify-center">
           {navigationLinks.map((link) => {
             const active = isActivePath(link.href);
             return (
               <ScrollLink 
                 key={link.href} 
                 href={link.href} 
-                className={`nav-link text-sm font-medium transition-colors duration-200 py-2 border-b-2 ${
+                className={`nav-link whitespace-nowrap text-sm font-medium transition-colors duration-200 py-2 border-b-2 ${
                   active 
                     ? 'text-blue-600 border-blue-600' 
                     : 'text-gray-600 border-transparent hover:text-blue-600'
